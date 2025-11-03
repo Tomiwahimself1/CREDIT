@@ -7,12 +7,16 @@ import {
 } from 'react-router-dom';
 
 
-import Credit from './Credit';
+import Login from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/credit" element={<Credit />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
     </>
   )
 );
