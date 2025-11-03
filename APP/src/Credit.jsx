@@ -133,14 +133,7 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
   }
 
   //STEP 5: Build the MAIN DASHBOARD (shows after login)
-   return (
-    <div>
-      <header className="header">
-        <h1>Credit Application System</h1>
-        <button onClick={handleLogout} className="btn-logout">Logout</button>
-      </header>
-    </div>
-  );
+   
   
 
 
