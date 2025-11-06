@@ -8,6 +8,34 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
 const redirect = useNavigate();
   const [activeTab, setActiveTab] = useState('pending');
   const [credentials, setCredentials] = useState({ username: '', password: '' });
+  
+  const handleLogin = (e) => {
+    e.preventDefault(); 
+    if (credentials.username && credentials.password) {
+      //setIsLoggedIn(true); 
+      redirect("/dashboard")
+    }
+  };
+
+  
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCredentials({ username: '', password: '' });
+  };
+
+  
+  const approveLoan = (loan) => {
+    setAcceptedLoans([...acceptedLoans, { ...loan, status: 'accepted' }]);
+  };
+
+  
+  const rejectLoan = (loan) => {
+    setRejectedLoans([...rejectedLoans, { 
+      ...loan, 
+      status: 'rejected',
+      reason: 'Did not meet lending criteria'
+    }]);
+  };
 
   //STEP 4: Build the LOGIN PAGE (shows when not logged in)
   if (!isLoggedIn) {
