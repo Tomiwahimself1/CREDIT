@@ -1,184 +1,126 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DataTable from 'react-data-table-component';
+//import './DashboardPage.css';
 
 export default function DashboardPage() {
-  const redirect = useNavigate();
-
-  // STATES
+  const redirect = useNavigate(); 
   const [activeTab, setActiveTab] = useState('pending');
   const [pendingLoans, setPendingLoans] = useState([
-    {
-      id: 1,
-      name: "Bola Tinubu",
-      amount: 50000,
-      bankName: "Access Bank",
-      accountNumber: "0123456789",
-      creditScore: 720,
-      income: 200000,
-    },
-    {
-      id: 2,
-      name: "Mary Johnson",
-      amount: 200000,
-      bankName: "GTBank",
-      accountNumber: "0987654321",
-      creditScore: 690,
-      income: 180000,
-    },
-    {
-      id: 3,
-      name: "Alamu Temitope",
-      amount: 76000,
-      bankName: "GTBank",
-      accountNumber: "0987654321",
-      creditScore: 690,
-      income: 180000,
-    },
-    {
-      id: 4,
-      name: "Tajudeen Micheal",
-      amount: 5000,
-      bankName: "GTBank",
-      accountNumber: "0987654321",
-      creditScore: 690,
-      income: 180000,
-    }
+    { id: 1, name: 'Bola Tinubu', amount: 50000, bankName: 'UNION BANK', accountNumber: '0123456567', creditScore: 720, income: 500000 },
+    { id: 2, name: 'Mary Johnson', amount: 200000, bankName: 'U.B.A', accountNumber: '0287654327', creditScore: 700, income: 300000 },
+    { id: 3, name: 'Alamu Temitope', amount: 76000, bankName: 'FIRST BANK', accountNumber: '0987654321', creditScore: 1000, income: 200000 },
+    { id: 4, name: 'Tajudeen Micheal', amount: 5000, bankName: 'ACCESS BANK', accountNumber: '0814654733', creditScore: 800, income: 180000 },
+    { id: 4, name: 'Shettima Obi', amount: 6000, bankName: 'SKYE BANK', accountNumber: '0887655322', creditScore: 800, income: 100000 }
   ]);
   const [acceptedLoans, setAcceptedLoans] = useState([]);
-  const [rejectedLoans, setRejectedLoans] = useState([]);
+  const [rejectedLoans, setRejectedLoans] = useState([]); 
 
-  // LOGOUT HANDLER
-  const handleLogout = () => {
-    redirect("/login");
-  };
+  const handleLogout = () => redirect('/login'); 
 
-  // APPROVE FUNCTION
   const approveLoan = (loan) => {
     setAcceptedLoans([...acceptedLoans, loan]);
     setPendingLoans(pendingLoans.filter((item) => item.id !== loan.id));
   };
 
-  // REJECT FUNCTION
   const rejectLoan = (loan) => {
-    const reason = prompt("Enter rejection reason:");
+    const reason = prompt('Enter rejection reason:');
     if (reason) {
       setRejectedLoans([...rejectedLoans, { ...loan, reason }]);
       setPendingLoans(pendingLoans.filter((item) => item.id !== loan.id));
     }
   };
 
+  const pendingColumns = [
+    { name: 'Name', selector: (row) => row.name, sortable: true },
+    { name: 'Amount', selector: (row) => `₦${row.amount.toLocaleString()}`, sortable: true },
+    { name: 'Bank', selector: (row) => row.bankName },
+    { name: 'Account Number', selector: (row) => row.accountNumber },
+    { name: 'Credit Score', selector: (row) => row.creditScore },
+    { name: 'Income', selector: (row) => `₦${row.income.toLocaleString()}` },
+    {
+      name: 'Actions',
+      cell: (row) => (
+        <div className="actions-container">
+          <button className="btn-approve" onClick={() => approveLoan(row)}>Approve</button>
+          <button className="btn-reject" onClick={() => rejectLoan(row)}>Reject</button>
+        </div>
+      ),
+    },
+  ];
+
+  const acceptedColumns = [
+    { name: 'Name', selector: (row) => row.name },
+    { name: 'Amount', selector: (row) => `₦${row.amount.toLocaleString()}` },
+    { name: 'Bank', selector: (row) => row.bankName },
+    { name: 'Account Number', selector: (row) => row.accountNumber },
+    { name: 'Credit Score', selector: (row) => row.creditScore },
+    { name: 'Income', selector: (row) => `₦${row.income.toLocaleString()}` },
+  ];
+
+  const rejectedColumns = [
+    { name: 'Name', selector: (row) => row.name },
+    { name: 'Amount', selector: (row) => `₦${row.amount.toLocaleString()}` },
+    { name: 'Bank', selector: (row) => row.bankName },
+    { name: 'Account Number', selector: (row) => row.accountNumber },
+    { name: 'Credit Score', selector: (row) => row.creditScore },
+    { name: 'Income', selector: (row) => `₦${row.income.toLocaleString()}` },
+    { name: 'Reason', selector: (row) => row.reason },
+  ];
+
   return (
     <div className="app-container">
-      {/* HEADER */}
       <header className="header">
         <h1>Credit Application System</h1>
         <button onClick={handleLogout} className="btn-logout">Logout</button>
       </header>
 
-      {/* NAVIGATION */}
       <nav className="navigation">
-        <button
-          className={activeTab === 'pending' ? 'nav-btn active' : 'nav-btn'}
-          onClick={() => setActiveTab('pending')}
-        >
+        <button className={activeTab === 'pending' ? 'nav-btn active' : 'nav-btn'} onClick={() => setActiveTab('pending')}>
           Pending Loans ({pendingLoans.length})
         </button>
-        <button
-          className={activeTab === 'accepted' ? 'nav-btn active' : 'nav-btn'}
-          onClick={() => setActiveTab('accepted')}
-        >
+        <button className={activeTab === 'accepted' ? 'nav-btn active' : 'nav-btn'} onClick={() => setActiveTab('accepted')}>
           Accepted Loans ({acceptedLoans.length})
         </button>
-        <button
-          className={activeTab === 'rejected' ? 'nav-btn active' : 'nav-btn'}
-          onClick={() => setActiveTab('rejected')}
-        >
+        <button className={activeTab === 'rejected' ? 'nav-btn active' : 'nav-btn'} onClick={() => setActiveTab('rejected')}>
           Rejected Loans ({rejectedLoans.length})
         </button>
       </nav>
 
-      {/* MAIN CONTENT */}
       <main className="main-content">
         {activeTab === 'pending' && (
-          <div className="loans-section">
-            <h2>Pending Loan Applications</h2>
-            {pendingLoans.length === 0 ? (
-              <p className="empty-state">No pending loan applications</p>
-            ) : (
-              <div className="loans-grid">
-                {pendingLoans.map((loan) => (
-                  <div key={loan.id} className="loan-card">
-                    <h3>{loan.name}</h3>
-                    <div className="loan-details">
-                      <p><strong>Loan Amount:</strong> ₦{loan.amount.toLocaleString()}</p>
-                      <p><strong>Bank:</strong> {loan.bankName}</p>
-                      <p><strong>Account Number:</strong> {loan.accountNumber}</p>
-                      <p><strong>Credit Score:</strong> {loan.creditScore}</p>
-                      <p><strong>Annual Income:</strong> ₦{loan.income.toLocaleString()}</p>
-                    </div>
-                    <div className="action-buttons">
-                      <button className="btn-approve" onClick={() => approveLoan(loan)}>Approve</button>
-                      <button className="btn-reject" onClick={() => rejectLoan(loan)}>Reject</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <DataTable
+            title="Pending Loan Applications"
+            columns={pendingColumns}
+            data={pendingLoans}
+            pagination
+            highlightOnHover
+            striped
+          />
         )}
 
         {activeTab === 'accepted' && (
-          <div className="loans-section">
-            <h2>Accepted Loan Applications</h2>
-            {acceptedLoans.length === 0 ? (
-              <p className="empty-state">No accepted loan applications</p>
-            ) : (
-              <div className="loans-grid">
-                {acceptedLoans.map((loan) => (
-                  <div key={loan.id} className="loan-card accepted">
-                    <h3>{loan.name}</h3>
-                    <div className="loan-details">
-                      <p><strong>Loan Amount:</strong> ₦{loan.amount.toLocaleString()}</p>
-                      <p><strong>Bank:</strong> {loan.bankName}</p>
-                      <p><strong>Account Number:</strong> {loan.accountNumber}</p>
-                      <p><strong>Credit Score:</strong> {loan.creditScore}</p>
-                      <p><strong>Annual Income:</strong> ₦{loan.income.toLocaleString()}</p>
-                    </div>
-                    <div className="status-badge success">Approved</div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <DataTable
+            title="Accepted Loan Applications"
+            columns={acceptedColumns}
+            data={acceptedLoans}
+            pagination
+            highlightOnHover
+            striped
+          />
         )}
 
         {activeTab === 'rejected' && (
-          <div className="loans-section">
-            <h2>Rejected Loan Applications</h2>
-            {rejectedLoans.length === 0 ? (
-              <p className="empty-state">No rejected loan applications</p>
-            ) : (
-              <div className="loans-grid">
-                {rejectedLoans.map((loan) => (
-                  <div key={loan.id} className="loan-card rejected">
-                    <h3>{loan.name}</h3>
-                    <div className="loan-details">
-                      <p><strong>Loan Amount:</strong> ₦{loan.amount.toLocaleString()}</p>
-                      <p><strong>Bank:</strong> {loan.bankName}</p>
-                      <p><strong>Account Number:</strong> {loan.accountNumber}</p>
-                      <p><strong>Credit Score:</strong> {loan.creditScore}</p>
-                      <p><strong>Annual Income:</strong> ₦{loan.income.toLocaleString()}</p>
-                      <p><strong>Reason:</strong> {loan.reason}</p>
-                    </div>
-                    <div className="status-badge danger">Rejected</div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <DataTable
+            title="Rejected Loan Applications"
+            columns={rejectedColumns}
+            data={rejectedLoans}
+            pagination
+            highlightOnHover
+            striped
+          />
         )}
       </main>
-      </div>
+    </div>
   );
 }
-    
